@@ -171,10 +171,10 @@ gulp.task('serve', ['scripts', 'styles'], () => {
 		port: 3000
 	});
 
-	gulp.watch(['app/**/*.html'], reload);
+	gulp.watch(['app/**/*.html'], ['html', reload]);
 	gulp.watch(['app/styles/**/*.{sass,css}'], ['styles', reload]);
-	gulp.watch(['app/scripts/**/*.js'], ['lint', 'scripts']);
-	gulp.watch(['app/images/**/*'], reload);
+	gulp.watch(['app/scripts/**/*.js'], ['lint', 'scripts', reload]);
+	gulp.watch(['app/images/**/*'], ['images', reload]);
 });
 
 // Build and serve the output from the dist build
@@ -194,6 +194,6 @@ gulp.task('build', ['lint', 'images', 'copy', 'scripts', 'styles', 'html'], () =
 
 	gulp.watch(['app/**/*.html'], ['html', reload]);
 	gulp.watch(['app/styles/**/*.{sass,css}'], ['styles', reload]);
-	gulp.watch(['app/scripts/**/*.js'], ['lint', 'scripts']);
+	gulp.watch(['app/scripts/**/*.js'], ['lint', 'scripts', reload]);
 	gulp.watch(['app/images/**/*'], ['images', reload]);
 });
