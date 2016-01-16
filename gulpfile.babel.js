@@ -19,11 +19,6 @@
 
 'use strict';
 
-// This gulpfile makes use of new JavaScript features.
-// Babel handles this without us having to do anything. It just works.
-// You can read more about the new JavaScript features here:
-// https://babeljs.io/docs/learn-es2015/
-
 import path from 'path';
 import gulp from 'gulp';
 import del from 'del';
@@ -31,7 +26,10 @@ import runSequence from 'run-sequence';
 import browserSync from 'browser-sync';
 import swPrecache from 'sw-precache';
 import gulpLoadPlugins from 'gulp-load-plugins';
-import {output as pagespeed} from 'psi';
+import {
+  output as pagespeed
+}
+from 'psi';
 import pkg from './package.json';
 
 const $ = gulpLoadPlugins();
@@ -39,7 +37,7 @@ const reload = browserSync.reload;
 
 // Lint JavaScript
 gulp.task('lint', () =>
-  gulp.src('app/scripts/**/*.js')
+  gulp.src('app/scripts/*.js')
   .pipe($.eslint())
   .pipe($.eslint.format())
   .pipe($.if(!browserSync.active, $.eslint.failOnError()))
@@ -87,10 +85,7 @@ gulp.task('styles', () => {
   ];
 
   // For best performance, don't add Sass partials to `gulp.src`
-  return gulp.src([
-      'app/styles/sass/**/*.sass',
-      'app/styles/css/**/*.css'
-    ])
+  return gulp.src('app/styles/sass/*.sass')
     .pipe($.newer('.tmp/styles'))
     .pipe($.sourcemaps.init())
     .pipe($.sass({
@@ -98,6 +93,7 @@ gulp.task('styles', () => {
     }).on('error', $.sass.logError))
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
     .pipe(gulp.dest('.tmp/styles'))
+    .pipe(gulp.dest('app/styles/css'))
     // Concatenate and minify styles
     .pipe($.if('*.css', $.cssnano()))
     .pipe($.size({
@@ -107,14 +103,9 @@ gulp.task('styles', () => {
     .pipe(gulp.dest('dist/styles'));
 });
 
-// Concatenate and minify JavaScript. Optionally transpiles ES2015 code to ES5.
-// to enables ES2015 support remove the line `"only": "gulpfile.babel.js",` in the
-// `.babelrc` file.
+// Concatenate and minify JavaScript.
 gulp.task('scripts', () =>
   gulp.src([
-    // Note: Since we are not using useref in the scripts build pipeline,
-    //       you need to explicitly list your scripts here in the right order
-    //       to be correctly concatenated
     './app/scripts/main.js'
     // Other scripts
   ])
@@ -127,7 +118,6 @@ gulp.task('scripts', () =>
   .pipe($.uglify({
     preserveComments: 'some'
   }))
-  // Output files
   .pipe($.size({
     title: 'scripts'
   }))
@@ -141,18 +131,13 @@ gulp.task('html', () => {
     .pipe($.useref({
       searchPath: '{.tmp,app}'
     }))
-    // Remove any unused CSS
     .pipe($.if('*.css', $.uncss({
       html: [
         'app/index.html'
       ],
-      // CSS Selectors for UnCSS to ignore
       ignore: []
     })))
-
-  // Concatenate and minify styles
-  // In case you are still using useref build blocks
-  .pipe($.if('*.css', $.cssnano()))
+    .pipe($.if('*.css', $.cssnano()))
 
   // Minify any HTML
   .pipe($.if('*.html', $.htmlmin({
@@ -166,7 +151,6 @@ gulp.task('html', () => {
       removeStyleLinkTypeAttributes: true,
       removeOptionalTags: true
     })))
-    // Output files
     .pipe($.if('*.html', $.size({
       title: 'html',
       showFiles: true
@@ -175,7 +159,7 @@ gulp.task('html', () => {
 });
 
 // Clean output directory
-gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git'], {
+gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git', 'app/styles/css/*'], {
   dot: true
 }));
 
@@ -184,7 +168,7 @@ gulp.task('serve', ['scripts', 'styles'], () => {
   browserSync({
     notify: false,
     // Customize the Browsersync console logging prefix
-    logPrefix: 'WSK',
+    logPrefix: 'DPS',
     // Allow scroll syncing across breakpoints
     scrollElementMapping: ['body'],
     // Run as an https by uncommenting 'https: true'
@@ -202,10 +186,10 @@ gulp.task('serve', ['scripts', 'styles'], () => {
 });
 
 // Build and serve the output from the dist build
-gulp.task('serve:dist', ['default'], () =>
+gulp.task('build', ['lint', 'images', 'copy', 'scripts', 'styles', 'html'], () => {
   browserSync({
     notify: false,
-    logPrefix: 'WSK',
+    logPrefix: 'DPB',
     // Allow scroll syncing across breakpoints
     scrollElementMapping: ['body'],
     // Run as an https by uncommenting 'https: true'
@@ -214,5 +198,10 @@ gulp.task('serve:dist', ['default'], () =>
     // https: true,
     server: 'dist',
     port: 3001
-  })
-);
+  });
+
+  gulp.watch(['dist/**/*.html'], reload);
+  gulp.watch(['dist/styles/*.css'], ['styles', reload]);
+  gulp.watch(['dist/scripts/*.js'], ['lint', 'scripts']);
+  gulp.watch(['dist/images/**/*'], reload);
+});

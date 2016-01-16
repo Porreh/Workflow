@@ -37,7 +37,7 @@
     "sw-toolbox": "^3.0.1"
   },
   "engines": {
-    "node": ">=0.12"
+    "node": ">=5.4"
   },
   "private": true,
   "scripts": {
