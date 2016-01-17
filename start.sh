@@ -4,5 +4,3 @@
 npm outdated
 npm install
 npm update
-
-bower init
