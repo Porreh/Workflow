@@ -1,22 +1,3 @@
-/**
- *
- *  Web Starter Kit
- *  Copyright 2015 Google Inc. All rights reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License
- *
- */
-
 'use strict';
 
 import gulp from 'gulp';
@@ -86,7 +67,6 @@ gulp.task('styles', () => {
 		.pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
 		.pipe(gulp.dest('.tmp/styles'))
 		.pipe(gulp.dest('app/styles/css'))
-		// Concatenate and minify styles
 		.pipe($.if('*.css', $.cssnano()))
 		.pipe($.size({
 			title: 'styles'
@@ -99,7 +79,6 @@ gulp.task('styles', () => {
 gulp.task('scripts', () =>
 	gulp.src([
 		'./app/scripts/main.js'
-		// Other scripts
 	])
 	.pipe($.newer('.tmp/scripts'))
 	.pipe($.sourcemaps.init())
@@ -131,7 +110,6 @@ gulp.task('html', () => {
 		})))
 		.pipe($.if('*.css', $.cssnano()))
 
-	// Minify any HTML
 	.pipe($.if('*.html', $.htmlmin({
 			removeComments: true,
 			collapseWhitespace: true,
@@ -159,13 +137,8 @@ gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git', 'app/styles/css/*'
 gulp.task('serve', ['scripts', 'styles'], () => {
 	browserSync({
 		notify: false,
-		// Customize the Browsersync console logging prefix
 		logPrefix: 'DPS',
-		// Allow scroll syncing across breakpoints
 		scrollElementMapping: ['body'],
-		// Run as an https by uncommenting 'https: true'
-		// Note: this uses an unsigned certificate which on first access
-		//       will present a certificate warning in the browser.
 		// https: true,
 		server: ['.tmp', 'app'],
 		port: 3000
@@ -182,11 +155,7 @@ gulp.task('build', ['lint', 'images', 'copy', 'scripts', 'styles', 'html'], () =
 	browserSync({
 		notify: false,
 		logPrefix: 'DPB',
-		// Allow scroll syncing across breakpoints
 		scrollElementMapping: ['body'],
-		// Run as an https by uncommenting 'https: true'
-		// Note: this uses an unsigned certificate which on first access
-		//       will present a certificate warning in the browser.
 		// https: true,
 		server: 'dist',
 		port: 3001
