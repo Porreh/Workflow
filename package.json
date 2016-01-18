@@ -14,7 +14,7 @@
     "del": "^2.2.0",
     "eslint": "^1.10.3",
     "eslint-config-defaults": "^8.0.2",
-    "eslint-plugin-filenames": "^0.2.0",
+    "eslint-plugin-babel": "^3.0.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-babel": "^6.1.1",
@@ -39,19 +39,5 @@
   "private": true,
   "scripts": {
     "lint": "eslint ."
-  },
-  "eslintConfig": {
-    "extends": "defaults/configurations/google",
-    "_varextends": {
-      "defaults": "ES5",
-      "defaults/configurations/off": "ES5",
-      "defaults/configurations/eslint": "ES5",
-      "defaults/configurations/google": "ES5",
-      "defaults/configurations/gulp": "ES5",
-      "defaults/configurations/airbnb/es5": "ES5",
-      "defaults/configurations/airbnb/es6": "ES6",
-      "defaults/configurations/walmart/es5": "ES5",
-      "defaults/configurations/walmart/es6": "ES6"
-    }
   }
 }
